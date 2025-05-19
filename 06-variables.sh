@@ -1,0 +1,8 @@
+#!/bin/bash
+
+NUMBER1=100
+NUMBER2=200
+
+TIMESTAMP=$(date)
+
+#SUM=$NUMBER1+$NUMBER2
