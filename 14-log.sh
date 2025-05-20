@@ -5,7 +5,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-LOGS_FOLDER="/Var/log/shellscript-logs"
+LOGS_FOLDER="/var/log/shellscript-logs"
 SCRIPT_NAME=$(echo 14-logs.sh |cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 
