@@ -12,7 +12,6 @@ LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 SOURCE_DIR=/home/ec2-user/app-logs
 
 mkdir -p $LOGS_FOLDER
-echo "script started excuting at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]
 then
@@ -33,11 +32,13 @@ else
 fi
 }
 
+echo "script started excuting at: $(date)" | tee -a $LOG_FILE
+
 FILES_TO_DELETE=$(find $SOURCE_DIR -name "*.log" -mtime +14)
 
 while IFS= read -r filepath
 do
-    echo "deleting file: $filepath" | tee -a $LOG_FILE
+    echo "Deleting file: $filepath" | tee -a $LOG_FILE
     rm -rf $filepath
 done <<< $FILES_TO_DELETE
 
