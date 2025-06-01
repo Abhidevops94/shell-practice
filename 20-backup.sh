@@ -75,9 +75,9 @@ then
         echo -e "succesfully created zip files"
         while IFS= read -r filepath
     do
-        echo "Deleting file: $filepath" | tee -a $LOG_FILE
-        rm -rf $filepath
-    done <<< $FILES_TO_DELETE
+        echo "Deleting file: $files" | tee -a $LOG_FILE
+        rm -rf $files
+    done <<< $FILES
     echo -e "logs files older than $DAYS frm source directory removed ... $G SUCCESS $N "
     else
         echo -e "Zip file creation ... $R FAILURE $N"
