@@ -4,89 +4,87 @@ START_TIME=$(date +%s)
 USERID=$(id -u)
 SOURCE_DIR=$1
 DEST_DIR=$2
-DAYS=${3:-14} #If days are provided that will be considered, otherwise default 14 days will be considered
+DAYS=${3:-14} # Default to 14 days if not provided
 
+# Colors
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
+
 LOGS_FOLDER="/var/log/shellscript-logs"
-SCRIPT_NAME=$(echo $0 |cut -d "." -f1)
+SCRIPT_NAME=$(basename "$0" | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 
-check_root(){
-    if [ $USERID -ne 0 ]
-    then
-        echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
-        exit 1 #give other than 0 upto 127
+# Ensure logs folder exists before logging
+mkdir -p "$LOGS_FOLDER"
+
+echo "Script started executing at: $(date)" | tee -a "$LOG_FILE"
+
+check_root() {
+    if [ "$USERID" -ne 0 ]; then
+        echo -e "${R}ERROR:: Please run this script with root access${N}" | tee -a "$LOG_FILE"
+        exit 1
     else
-        echo "you are running with root access" | tee -a $LOG_FILE
+        echo "You are running with root access" | tee -a "$LOG_FILE"
     fi
 }
 
-#Validate function takes input as exit status, what command they tried to install
-VALIDATE(){
-    if [ $1 -eq 0 ]
-then
-    echo -e "$2 is ... $G success $N" | tee -a $LOG_FILE
-else
-    echo -e "$2 is ... $R failure $N" | tee -a $LOG_FILE
-    exit 1
-fi
+validate() {
+    if [ "$1" -eq 0 ]; then
+        echo -e "$2 ... ${G}SUCCESS${N}" | tee -a "$LOG_FILE"
+    else
+        echo -e "$2 ... ${R}FAILURE${N}" | tee -a "$LOG_FILE"
+        exit 1
+    fi
 }
 
-echo "script started excuting at: $(date)" | tee -a $LOG_FILE
+usage() {
+    echo -e "${Y}USAGE:${N} sudo bash $0 <source-dir> <destination-dir> [days]" | tee -a "$LOG_FILE"
+}
+
+# Input validation
+if [ $# -lt 2 ]; then
+    usage
+    exit 1
+fi
 
 check_root
-mkdir -p $LOGS_FOLDER
 
-USAGE(){
-    echo -e "$R USAGE:: $N sh 20-backup.sh <source-dir> <destination-dir> <days>"
-}
-
-if [ $# -lt 2 ]
-then
-    USAGE
+if [ ! -d "$SOURCE_DIR" ]; then
+    echo -e "${R}Source directory $SOURCE_DIR doesn't exist. Please check.${N}" | tee -a "$LOG_FILE"
     exit 1
 fi
 
-if [ ! -d "$SOURCE_DIR" ]
-then    
-    echo -e "$R source directory $SOURCE_DIR doesn't exist. please check $N"
+if [ ! -d "$DEST_DIR" ]; then
+    echo -e "${R}Destination directory $DEST_DIR doesn't exist. Please check.${N}" | tee -a "$LOG_FILE"
     exit 1
 fi
 
-if [ ! -d "$DEST_DIR" ]
-then    
-    echo -e "$R destination directory $DEST_DIR doesn't exist. please check $N"
-    exit 1
-fi
+# Find matching files
+FILES=$(find "$SOURCE_DIR" -name "*.log" -mtime +"$DAYS")
 
-FILES=$(find $SOURCE_DIR -name "*.log" -mtime +$DAYS)
+if [ -n "$FILES" ]; then
+    echo "Files to zip:" | tee -a "$LOG_FILE"
+    echo "$FILES" | tee -a "$LOG_FILE"
 
-if [ ! -n "$FILES" ]
-then
-    echo "Files to zip are: $FILES"
     TIME_STAMP=$(date +%F-%H-%M-%S)
     ZIP_FILE="$DEST_DIR/app-logs-$TIME_STAMP.zip"
-    find "$SCRIPT_DIR" -name "*.log" -mtime +$DAYS | zip -@ "$ZIP_FILE"
 
-    if [ -f "$ZIP_FILE" ]
-    then
-        echo -e "succesfully created zip file"
+    echo "$FILES" | zip -@ "$ZIP_FILE"
+    validate $? "Zipping log files"
 
-        while IFS= read -r filepath
-        do
-            echo "Deleting file: $filepath" | tee -a $LOG_FILE
-            rm -rf $filepath
-        done <<< $FILES
+    if [ -f "$ZIP_FILE" ]; then
+        while IFS= read -r filepath; do
+            echo "Deleting file: $filepath" | tee -a "$LOG_FILE"
+            rm -f "$filepath"
+        done <<< "$FILES"
 
-        echo -e "logs files older than $DAYS from source directory removed ... $G SUCCESS $N "
+        echo -e "Log files older than $DAYS days from source directory removed ... ${G}SUCCESS${N}" | tee -a "$LOG_FILE"
     else
-        echo -e "Zip file creation ... $R FAILURE $N"
+        echo -e "Zip file creation ... ${R}FAILURE${N}" | tee -a "$LOG_FILE"
         exit 1
     fi
 else
-    echo -e "No files to found older than 14 days ... $Y SKIPPING $N"
+    echo -e "No files found older than $DAYS days ... ${Y}SKIPPING${N}" | tee -a "$LOG_FILE"
 fi
-
