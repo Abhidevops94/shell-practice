@@ -65,7 +65,7 @@ FILES=$(find $SOURCE_DIR -name "*.log" -mtime +$DAYS)
 
 if [ ! -z $FILES ]
 then
-    echo -e "files found"
+    echo -e "files to zip are: $FILES"
 else
     echo -e "No files to found older than 14 days ... $Y SKIPPING $N"
 fi
