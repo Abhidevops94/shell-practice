@@ -40,6 +40,7 @@ while IFS= read -r filepath
 do
     echo "deleting file: $filepath" | tee -a $LOG_FILE
     rm -rf $filepath
+    
 done <<< $FILE_TO_DELETE
 
 END_TIME=$(date +%s)
