@@ -47,6 +47,7 @@ USAGE(){
 if [ $# -lt 2 ]
 then
     USAGE
+    exit 1
 fi
 
 if [ ! -d "$SOURCE_DIR" ]
@@ -63,12 +64,12 @@ fi
 
 FILES=$(find $SOURCE_DIR -name "*.log" -mtime +$DAYS)
 
-if [ ! -z "$FILES" ]
+if [ ! -n "$FILES" ]
 then
     echo "Files to zip are: $FILES"
     TIME_STAMP=$(date +%F-%H-%M-%S)
     ZIP_FILE="$DEST_DIR/app-logs-$TIME_STAMP.zip"
-    find $SCRIPT_DIR -name "*.log" -mtime +$DAYS | zip -@ "$ZIP_FILE"
+    find "$SCRIPT_DIR" -name "*.log" -mtime +$DAYS | zip -@ "$ZIP_FILE"
 
     if [ -f "$ZIP_FILE" ]
     then
