@@ -76,8 +76,8 @@ then
 
         while IFS= read -r filepath
         do
-            echo "Deleting file: $filespath" | tee -a $LOG_FILE
-            rm -rf $filespath
+            echo "Deleting file: $filepath" | tee -a $LOG_FILE
+            rm -rf $filepath
         done <<< $FILES
 
         echo -e "logs files older than $DAYS from source directory removed ... $G SUCCESS $N "
