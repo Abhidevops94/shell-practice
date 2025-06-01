@@ -49,13 +49,13 @@ then
     USAGE
 fi
 
-if [ ! -d $SOURCE_DIR ]
+if [ ! -d "$SOURCE_DIR" ]
 then    
     echo -e "$R source directory $SOURCE_DIR doesn't exist. please check $N"
     exit 1
 fi
 
-if [ ! -d $DEST_DIR ]
+if [ ! -d "$DEST_DIR" ]
 then    
     echo -e "$R destination directory $DEST_DIR doesn't exist. please check $N"
     exit 1
@@ -70,7 +70,7 @@ then
     ZIP_FILE="$DEST_DIR/app-logs-$TIME_STAMP.zip"
     find $SCRIPT_DIR -name "*.log" -mtime +$DAYS | zip -@ "$ZIP_FILE"
 
-    if [ -f $ZIP_FILE ]
+    if [ -f "$ZIP_FILE" ]
     then
         echo -e "succesfully created zip file"
 
