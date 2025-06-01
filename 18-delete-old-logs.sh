@@ -33,15 +33,13 @@ else
 fi
 }
 
-
 FILES_TO_DELETE=$(find $SOURCE_DIR -name "*.log" -mtime +14)
 
 while IFS= read -r filepath
 do
     echo "deleting file: $filepath" | tee -a $LOG_FILE
     rm -rf $filepath
-    
-done <<< $FILE_TO_DELETE
+done <<< $FILES_TO_DELETE
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
