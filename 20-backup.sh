@@ -51,13 +51,13 @@ fi
 
 if [ ! -d $SOURCE_DIR ]
 then    
-    echo -e "$R $SOURCE_DIR doesn't exist. please check $N"
+    echo -e "$R source directory $SOURCE_DIR doesn't exist. please check $N"
     exit 1
 fi
 
 if [ ! -d $DEST_DIR ]
 then    
-    echo -e "$R $DEST_DIR doesn't exist. please check $N"
+    echo -e "$R destination directory $DEST_DIR doesn't exist. please check $N"
     exit 1
 fi
 
