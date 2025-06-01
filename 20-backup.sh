@@ -49,4 +49,15 @@ then
     USAGE
 fi
 
+if [ ! -d $SOURCE_DIR ]
+then    
+    echo -e "$R $SOURCE_DIR doesn't exist. please check $N"
+    exit 1
+fi
+
+if [ ! -d $DEST_DIR ]
+then    
+    echo -e "$R $DEST_DIR doesn't exist. please check $N"
+    exit 1
+fi
 
