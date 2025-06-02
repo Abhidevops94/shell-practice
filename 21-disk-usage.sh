@@ -8,5 +8,5 @@ while IFS= read line
 do 
     USAGE=$(echo $line | awk '{print $6F}' | cut -d "%" -f1)
     PARITION=$(echo $line | awk '{print $6F}')
-    echo "$PARTITION: $USAGE"
+    echo "$PARITION: $USAGE"
 done <<< $DISK_USAGE
