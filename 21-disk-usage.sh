@@ -13,3 +13,5 @@ do
         MSG="High disk usage on $PARTITION: $USAGE"
     fi
 done <<< $DISK_USAGE
+
+echo $MSG
